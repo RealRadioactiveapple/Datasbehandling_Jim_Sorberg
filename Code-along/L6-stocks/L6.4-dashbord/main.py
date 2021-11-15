@@ -31,7 +31,7 @@ slider_marks = {i: mark for i, mark in enumerate(
 stylesheets = [dbc.themes.MATERIA]
 
 
-app = dash.Dash(__name__, external_stylesheets= stylesheets)
+app = dash.Dash(__name__, external_stylesheets= stylesheets, meta_tags=[dict(name="viewport", content="width=device-width, initial-scale=1.0")])
 
 app.layout = dbc.Container([
 
@@ -56,15 +56,37 @@ app.layout = dbc.Container([
         )
     ], className="mt-4"),
     
-    
+    dbc.Row([
+        dbc.Col([dcc.Graph(id="stock-graph",className=""),
+
+        dcc.Slider(id='time-slider', className='', min=0, max=6, step=None, value= 2, marks= slider_marks)
+        ], lg={"size":"6", "offset":1}, xl= {"size":"6","offset":1}),
+
+        dbc.Col([
+            dbc.Card([
+                html.H2("Highest value", className="h5 mt-3 mx-3"),
+                html.P(id="highest-value", className="mx-3 h1 text-success"),
+            ], className="mt-5 w-50"),
+
+            dbc.Card([
+                html.H2("Lowest Value", className="h5 mt-3 mx-3"),
+                html.P(id="lowest-value", className= "mx-3 h1 text-danger"),
+            ], className="mt-5 w-50")
+
+        ])
+
+
+    ]),
     
 
-    html.P(id="highest-value"),
-    html.P(id="lowest-value"),
-    
-    dcc.Graph(id="stock-graph",className=""),
 
-    dcc.Slider(id='time-slider', className='', min=0, max=6, step=None, value= 2, marks= slider_marks),
+
+
+
+    
+    
+    
+    
     dcc.Store(id="filtered-df")
     
 
