@@ -28,32 +28,47 @@ slider_marks = {i: mark for i, mark in enumerate(
 
 ) }
 
-stylesheets = [dbc.themes.BOOTSTRAP]
+stylesheets = [dbc.themes.MATERIA]
 
 
-app = dash.Dash(__name__)
+app = dash.Dash(__name__, external_stylesheets= stylesheets)
 
-app.layout = html.Div([
-    html.H1("stocks viewer"),
-    html.P("Choose a stock"),
-    dcc.Dropdown(id='stock-picker-dropdown', className='',
+app.layout = dbc.Container([
+
+    dbc.Card([
+        dbc.CardBody(html.H1("Stocky Dashboard", className="text-primary m-3"))
+    ], className= "mt-3"),
+
+    dbc.Row([
+        dbc.Col( html.P("Choose a stock"), className="mt-1",
+          lg= "4",  xl= {"size":2, "offset":1}
+        ),
+
+        dbc.Col(dcc.Dropdown(id='stock-picker-dropdown', className='',
         options=stock_options_dropdown,
         value='AAPL'
-        ),
+        ),lg = "4", xl="3"),
+        dbc.Col(
+            dbc.Card(dcc.RadioItems(id ="ohlc-radio", className='m-1',
+                    options= ohlc_options,
+                    value='close'
+                    ),),lg="4", xl="3"
+        )
+    ], className="mt-4"),
+    
+    
+    
 
     html.P(id="highest-value"),
     html.P(id="lowest-value"),
-    dcc.RadioItems(id ="ohlc-radio", className='',
-                    options= ohlc_options,
-                    value='close'
-                    ),
+    
     dcc.Graph(id="stock-graph",className=""),
 
     dcc.Slider(id='time-slider', className='', min=0, max=6, step=None, value= 2, marks= slider_marks),
     dcc.Store(id="filtered-df")
     
 
-])
+], fluid= True)
 @app.callback(Output("filtered-df", "data"),
     Input("stock-picker-dropdown", "value"),
     Input("time-slider", "value"))
